@@ -1,82 +1,122 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #333333;
+}
+
 .friends-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 900px;
+  width: 90%;
   padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.friends-section {
+  flex: 1;
+  padding: 15px;
+  margin-right: 20px;
+  background-color: #fff;
+  border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-  h2 {
-    color: #343a40;
+  h3 {
+    text-align: center;
+    font-size: 24px;
     margin-bottom: 20px;
+    color: #333;
   }
 
   .friends-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .friend-item {
     display: flex;
-    flex-direction: column;
-    margin-bottom: 30px;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 
-    .friend-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #ffffff;
-      padding: 10px 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    &:hover {
+      background-color: #eaeaea;
+    }
 
-      p {
-        margin: 0;
-        font-weight: 500;
-        color: #343a40;
-      }
+    .friend-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
 
-      button {
-        background-color: #dc3545;
-        color: #fff;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-          background-color: #c82333;
-        }
-      }
+    .friend-name {
+      font-size: 18px;
+      font-weight: 500;
+      color: #555;
     }
   }
 
-  .add-friend {
-    h3 {
-      margin-bottom: 20px;
-      color: #495057;
+  .no-friends-message {
+    text-align: center;
+    font-size: 16px;
+    color: #999;
+  }
+}
+
+.add-friend-section {
+  flex: 0 0 400px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .input-field {
+      padding: 10px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 10px;
+
+      &:focus {
+        outline: none;
+        border-color: #007bff;
+      }
     }
 
-    .form-group {
-      margin-bottom: 15px;
-
-      label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 5px;
-      }
-
-      input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ced4da;
-      }
-    }
-
-    button {
+    .add-button {
+      padding: 10px 15px;
       background-color: #007bff;
-      color: #fff;
+      color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s;
 
       &:hover {
         background-color: #0056b3;

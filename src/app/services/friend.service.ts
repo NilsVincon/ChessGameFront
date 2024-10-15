@@ -8,18 +8,17 @@ import { Friendship } from '../models/friendship.model';
   providedIn: 'root'
 })
 export class FriendService {
-  private baseUrl = 'http://localhost:8080/friendship';
+  private baseUrl = 'http://localhost:8080/api/friend';
   constructor(private http: HttpClient) { }
 
   getAllFriendships(): Observable<Friendship[]> {
-    return this.http.get<Friendship[]>(`${this.baseUrl}/getAll`);
+    return this.http.get<Friendship[]>(`${this.baseUrl}/getFriends`);
   }
 
-  addFriendship(friendship: Friendship): Observable<any> {
-    return this.http.post(`${this.baseUrl}/add`, friendship, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
+  addFriendship(username_friend: string): Observable<any> {
+    const url = `${this.baseUrl}/add/${username_friend}`;
+    return this.http.post(url, {}, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }
 

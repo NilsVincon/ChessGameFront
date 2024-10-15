@@ -1,11 +1,30 @@
-<form (ngSubmit)="addFriend()">
-  <div>
-    <label for="friend1Id">Friend 1 ID:</label>
-    <input type="number" id="friend1Id" [(ngModel)]="friend1Id" name="friend1Id" required />
+<div class="main-container">
+  <div class="friends-container">
+    <div class="friends-section">
+      <h3>Your Friends</h3>
+      <ul class="friends-list" *ngIf="friendships.length > 0; else noFriends">
+        <li *ngFor="let friend of friendships" class="friend-item">
+          <img src="/assets/images/avatar.png" alt="Friend Avatar" class="friend-avatar">
+          <span class="friend-name">{{ friend }}</span>
+        </li>
+      </ul>
+      <ng-template #noFriends>
+        <p class="no-friends-message">You have no friends yet.</p>
+      </ng-template>
+    </div>
+
+    <div class="add-friend-section">
+      <h3>Add a New Friend</h3>
+      <form (submit)="addFriend(usernameFriendInput.value)">
+        <input
+          #usernameFriendInput
+          type="text"
+          placeholder="Enter friend's username"
+          class="input-field"
+          required
+        />
+        <button type="submit" class="add-button">Add Friend</button>
+      </form>
+    </div>
   </div>
-  <div>
-    <label for="friend2Id">Friend 2 ID:</label>
-    <input type="number" id="friend2Id" [(ngModel)]="friend2Id" name="friend2Id" required />
-  </div>
-  <button type="submit">Add Friendship</button>
-</form>
+</div>
