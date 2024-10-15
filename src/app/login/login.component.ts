@@ -1,38 +1,44 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {RouterLink,Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
+import {RouterLink, Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     FormsModule,
-    NgIf,RouterLink
+    NgIf, RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  email: string = '';
+  username: string = '';
   password: string = '';
   passwordVisible: boolean = false;
-  /*
-  signupEmail: string = '';
-  signupPassword: string = '';
-  showSignup: boolean = false;
-   */
+  errorMessage = '';
 
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+  }
 
-  onLogin() {
-    if (this.email === 'test@example.com' && this.password === 'password') {
-      console.log('Login successful!');
-      this.router.navigate(['/playchess']);
-    } else {
-      console.log('Invalid credentials');
-    }
+  login(): void {
+    const credentials = {username: this.username, password: this.password};
+
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        const token = response.token; // Le token est supposé être dans la réponse
+        if (token) {
+          this.authService.setToken(token);  // Stocker le token dans le localStorage
+          this.router.navigate(['/dashboard']);  // Rediriger après connexion
+        }
+      },
+      error: (err) => {
+        this.errorMessage = 'Login failed. Please check your credentials.';
+      }
+    });
   }
 
   togglePasswordVisibility() {

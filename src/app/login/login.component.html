@@ -1,8 +1,8 @@
 <div class="login-container">
-  <form (submit)="onLogin()">
+  <form (submit)="login()">
     <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="Email" required>
+      <label for="username">Email:</label>
+      <input type="text" id="username" [(ngModel)]="username" name="username" placeholder="Username" required>
     </div>
 
     <div class="form-group">
@@ -22,6 +22,9 @@
     </div>
 
     <button type="submit" class="btn btn-primary login-button">Login</button>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
     <p>Don't have an account? <a routerLink="/signup">Sign Up</a></p>
   </form>
 </div>
