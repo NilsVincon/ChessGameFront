@@ -18,11 +18,13 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
   passwordVisible: boolean = false;
+  errorMessage: string = '';
 
   constructor(private router: Router, private _http: HttpClient) {}
 
   login() {
-    this._http.post<{ jwt: string }>('http://localhost:8080/api/auth/login', { username: "Harry", password: "Covert" })
+    this.errorMessage = '';
+    this._http.post<{ jwt: string }>('http://localhost:8080/api/auth/login', { username: this.username, password: this.password })
       .subscribe({
         next: (response) => {
           console.log('Connexion réussie !', response);
@@ -30,10 +32,7 @@ export class LoginComponent {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          console.log('Identifiants invalides', error);
-        },
-        complete: () => {
-          console.log('Requête terminée');
+          this.errorMessage = 'Identifiant ou mot de passe incorrect';;
         }
       });
   }

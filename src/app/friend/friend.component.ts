@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {Router, RouterLink} from "@angular/router";
-import {Friendship} from "../models/friendship.model";
-import {FriendService} from "../services/friend.service";
 import {FormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
+import {Friendship} from "../models/friendship.model";
+import {FriendService} from "../services/friend.service";
+
 
 @Component({
   selector: 'app-friend',
@@ -16,11 +17,9 @@ export class FriendComponent implements OnInit {
 
   friendships: Friendship[] = [];
   constructor(private friendService: FriendService,private router: Router) { }
-
   ngOnInit(): void {
     this.loadFriends();
   }
-
   loadFriends() {
     this.friendService.getAllFriendships().subscribe(data => {
       this.friendships = data;

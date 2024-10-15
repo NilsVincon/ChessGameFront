@@ -4,14 +4,8 @@
       <label for="username">Username:</label>
       <input type="text" id="username" [(ngModel)]="username" name="username" placeholder="Username" required>
     </div>
-
     <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="Email" required>
-    </div>
-
-    <div class="form-group">
-      <label for="password">Password:</label>
+      <label for="password2">Password:</label>
       <div class="input-group">
         <input [type]="passwordVisible ? 'text' : 'password'" id="password" [(ngModel)]="password" name="password" placeholder="Password" required>
         <span class="show-password" (click)="togglePasswordVisibility()">
@@ -24,6 +18,25 @@
           </svg>
         </span>
       </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Confirm password:</label>
+      <div class="input-group">
+        <input [type]="passwordVisible2 ? 'text' : 'password'" id="password2" [(ngModel)]="password2" name="password2" placeholder="Confirm" required>
+        <span class="show-password" (click)="togglePasswordVisibility2()">
+          <svg *ngIf="!passwordVisible2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-.382 1.259-1.012 2.427-1.858 3.423m-2.7-2.034A3 3 0 0015 12m-3 3c-1.598 0-2.973-1.158-3.412-2.688" />
+          </svg>
+          <svg *ngIf="passwordVisible2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.013 10.013 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .854-2.817 3.197-5.02 6.17-5.74m1.042-3.275A9.978 9.978 0 0112 5c4.478 0 8.268 2.943 9.542 7-.538 1.773-1.547 3.31-2.841 4.444M9.879 9.88l4.242 4.242m-4.242 0l4.242-4.242" />
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
     </div>
 
     <button type="submit" class="btn btn-primary signup-button">Sign Up</button>

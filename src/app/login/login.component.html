@@ -20,6 +20,9 @@
         </span>
       </div>
     </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
 
     <button type="submit" class="btn btn-primary login-button">Login</button>
     <p>Don't have an account? <a routerLink="/signup">Sign Up</a></p>

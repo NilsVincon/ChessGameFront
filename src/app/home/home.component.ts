@@ -21,7 +21,10 @@ export class HomeComponent {
           console.log('Réponse de l\'API avec JWT :', response);
         },
         error: (error) => {
-          console.log('Erreur lors de la requête avec JWT :', error);
+          console.log('Vous devez etre connecte pour acceder a cette ressource');
+          if (error) {
+            this.router.navigate(['/login']);
+          }
         }
       });
   }
