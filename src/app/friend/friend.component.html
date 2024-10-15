@@ -1,1 +1,11 @@
-<p>friend works!</p>
+<form (ngSubmit)="addFriend()">
+  <div>
+    <label for="friend1Id">Friend 1 ID:</label>
+    <input type="number" id="friend1Id" [(ngModel)]="friend1Id" name="friend1Id" required />
+  </div>
+  <div>
+    <label for="friend2Id">Friend 2 ID:</label>
+    <input type="number" id="friend2Id" [(ngModel)]="friend2Id" name="friend2Id" required />
+  </div>
+  <button type="submit">Add Friendship</button>
+</form>
