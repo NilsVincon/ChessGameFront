@@ -1,5 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">{{ title | titlecase }}</a>
+  <a class="navbar-brand" href="#">
+    <img src="/assets/images/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+    {{ title | titlecase }}
+  </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -9,16 +12,16 @@
         <a class="nav-link" routerLink="/">Play Chess</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Game History</a>
+        <a class="nav-link" routerLink="/history">Game History</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Ranking</a>
+        <a class="nav-link" routerLink="/ranking">Ranking</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Friends</a>
+        <a class="nav-link" routerLink="/friend">Friends</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">login</a>
+        <a class="nav-link" routerLink="/login">login</a>
       </li>
     </ul>
   </div>
