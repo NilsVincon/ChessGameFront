@@ -15,7 +15,7 @@
 
     <div class="add-friend-section">
       <h3>Add a New Friend</h3>
-      <form (submit)="addFriend(usernameFriendInput.value)">
+      <form (ngSubmit)="addFriend(usernameFriendInput.value, usernameFriendInput)">
         <input
           #usernameFriendInput
           type="text"
@@ -23,7 +23,7 @@
           class="input-field"
           required
         />
-        <button type="submit" class="add-button">Add Friend</button>
+        <button type="submit" class="add-button">+</button>
       </form>
     </div>
   </div>

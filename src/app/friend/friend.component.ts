@@ -4,12 +4,13 @@ import {FormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {Friendship} from "../models/friendship.model";
 import {FriendService} from "../services/friend.service";
+import {CommonModule} from "@angular/common";
 
 
 @Component({
   selector: 'app-friend',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgForOf, NgIf],
+  imports: [CommonModule,RouterLink, FormsModule, NgForOf, NgIf],
   templateUrl: './friend.component.html',
   styleUrl: './friend.component.scss'
 })
@@ -28,13 +29,17 @@ export class FriendComponent implements OnInit {
     });
   }
 
-  addFriend(username_friend: string) {
-    this.friendService.addFriendship(username_friend).subscribe(response => {
-      console.log("Amitié ajoutée", response);
-      this.loadFriends();
-      this.router.navigate(['/friend']);
-    }, error => {
-      console.error("Erreur lors de l'ajout de l'amitié", error);
+  addFriend(username_friend: string, inputElement: HTMLInputElement) {
+    this.friendService.addFriendship(username_friend).subscribe({
+      next: (response) => {
+        console.log('Amitié ajoutée', response);
+        this.loadFriends();
+        inputElement.value = '';
+        this.router.navigate(['/friend']);
+      },
+      error: (error) => {
+        console.error("Erreur lors de l'ajout de l'amitié", error);
+      }
     });
   }
 
