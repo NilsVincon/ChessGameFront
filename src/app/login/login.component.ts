@@ -32,7 +32,7 @@ export class LoginComponent {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorMessage = 'Identifiant ou mot de passe incorrect';;
+          this.errorMessage = 'Identifiant ou mot de passe incorrect';
         }
       });
   }
