@@ -19,6 +19,9 @@ export class HomeComponent {
       .subscribe({
         next: (response) => {
           console.log('Réponse de l\'API avec JWT :', response);
+          if (response){
+            this.router.navigate(['/new-game'])
+          }
         },
         error: (error) => {
           console.log('Vous devez etre connecte pour acceder a cette ressource');

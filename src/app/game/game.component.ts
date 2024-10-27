@@ -77,6 +77,24 @@ export class GameComponent implements AfterViewInit {
       })
       .then(data => {
         console.log('Success:', data);
+        // Sélectionner la case d'origine et de destination
+        const originSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.initialPosition.column)}${8 - move.initialPosition.row}"]`);
+        const destinationSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.finalPosition.column)}${8 - move.finalPosition.row}"]`);
+
+        // Déplacer l'image de la pièce
+        if (originSquare && destinationSquare) {
+          const piece = originSquare.querySelector('img');
+
+          // Retirer toute pièce existante sur la case de destination
+          const existingPiece = destinationSquare.querySelector('img');
+          if (existingPiece) {
+            existingPiece.remove();
+          }
+
+          if (piece) {
+            destinationSquare.appendChild(piece);
+          }
+        }
       })
       .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
