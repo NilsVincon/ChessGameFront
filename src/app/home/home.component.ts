@@ -12,7 +12,19 @@ import {HttpClient} from "@angular/common/http";
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+  private gameMode: 'local' | 'online' | null = null;
+
   constructor(private router: Router, private _http: HttpClient) {}
+
+  setLocalGameMode() {
+    this.gameMode = 'local';
+    this.testRequest();
+  }
+
+  setOnlineGameMode() {
+    this.gameMode = 'online';
+    this.testRequest();
+  }
 
   testRequest() {
     this._http.get('http://localhost:8080/api/protected')
@@ -20,7 +32,11 @@ export class HomeComponent {
         next: (response) => {
           console.log('Réponse de l\'API avec JWT :', response);
           if (response){
-            this.router.navigate(['/new-game'])
+            if (this.gameMode === 'local') {
+              this.router.navigate(['/new-game']);
+            } else if (this.gameMode === 'online') {
+              this.router.navigate(['/onlinegame']);
+            }
           }
         },
         error: (error) => {

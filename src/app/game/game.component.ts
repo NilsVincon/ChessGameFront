@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
+import {NgClass, NgOptimizedImage} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Position } from '../models/position.model'; // Importez la classe Position
 import { Move } from '../models/move.model'; // Importez la classe Move
@@ -10,7 +10,8 @@ import { Move } from '../models/move.model'; // Importez la classe Move
   standalone: true,
   imports: [
     RouterLink,
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgClass
   ],
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
@@ -18,10 +19,16 @@ import { Move } from '../models/move.model'; // Importez la classe Move
 export class GameComponent implements AfterViewInit {
 
   private initialPosition: Position | null = null; // Pour stocker la position initiale
+  isPlayerOneTurn: boolean = true;
+  private whiteTime: number = 600;
+  private blackTime: number = 600;
+  private activePlayer: 'white' | 'black' = 'white';
+  private timerInterval: any;
 
   constructor(private http: HttpClient) {}
 
   ngAfterViewInit(): void {
+    this.startTimer();
     const squares = document.querySelectorAll<HTMLDivElement>('.square');
 
     squares.forEach(square => {
@@ -35,16 +42,64 @@ export class GameComponent implements AfterViewInit {
           console.log(`Objet Position:`, posObject); // Afficher l'objet Position
 
           if (!this.initialPosition) {
-            this.initialPosition = posObject; // Définir la position initiale
+            this.initialPosition = posObject;
+            this.highlightSquare(square);
           } else {
             const move = new Move(this.initialPosition, posObject); // Créer un nouvel objet Move
             console.log('Objet Move:', move);
             this.sendMoveToBackend(move); // Envoyer l'objet Move
             this.initialPosition = null; // Réinitialiser la position initiale
+            this.toggleTurn();
           }
         }
       });
     });
+  }
+
+  startTimer(): void {
+    this.timerInterval = setInterval(() => {
+      if (this.activePlayer === 'white') {
+        this.whiteTime--;
+        this.updateTimerDisplay('white', this.whiteTime);
+      } else {
+        this.blackTime--;
+        this.updateTimerDisplay('black', this.blackTime);
+      }
+
+      // Arrêtez le minuteur lorsque le temps atteint zéro
+      if (this.whiteTime <= 0 || this.blackTime <= 0) {
+        clearInterval(this.timerInterval);
+        alert(`Le temps est écoulé pour ${this.activePlayer === 'white' ? 'Blanc' : 'Noir'}!`);
+      }
+    }, 1000);
+  }
+
+  updateTimerDisplay(player: 'white' | 'black', time: number): void {
+    const timerElement = document.querySelector(`.player-info.${player} .timer`);
+    if (timerElement) {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+  }
+
+  toggleTurn(): void {
+    this.activePlayer = this.activePlayer === 'white' ? 'black' : 'white'; // Change le joueur actif
+    clearInterval(this.timerInterval); // Arrêtez le minuteur actuel
+    this.startTimer(); // Démarre le minuteur pour le nouveau joueur
+  }
+
+  toggleTurnAndRotateBoard(): void {
+    this.isPlayerOneTurn = !this.isPlayerOneTurn;
+
+    const chessboardRotatable = document.querySelector('.chessboard-rotatable');
+    if (chessboardRotatable) {
+      if (this.isPlayerOneTurn) {
+        chessboardRotatable.classList.remove('rotate-180');
+      } else {
+        chessboardRotatable.classList.add('rotate-180');
+      }
+    }
   }
 
   sendMoveToBackend(move: Move): void {
@@ -81,6 +136,8 @@ export class GameComponent implements AfterViewInit {
         const originSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.initialPosition.column)}${8 - move.initialPosition.row}"]`);
         const destinationSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.finalPosition.column)}${8 - move.finalPosition.row}"]`);
 
+        this.clearHighlights();
+
         // Déplacer l'image de la pièce
         if (originSquare && destinationSquare) {
           const piece = originSquare.querySelector('img');
@@ -94,12 +151,16 @@ export class GameComponent implements AfterViewInit {
           if (piece) {
             destinationSquare.appendChild(piece);
           }
+          this.highlightSquare(originSquare as HTMLElement);
+          this.highlightSquare(destinationSquare as HTMLElement);
         }
+        this.toggleTurnAndRotateBoard();
       })
       .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
         alert('Mouvement invalide ! Veuillez réessayer.'); // Afficher un message d'erreur
-        this.initialPosition = null; // Réinitialiser la position initiale pour permettre un nouveau mouvement
+        this.initialPosition = null;
+        this.clearHighlights();
       });
   }
 
@@ -117,5 +178,12 @@ export class GameComponent implements AfterViewInit {
 
     return new Position(row, column);
   }
+  private highlightSquare(square: HTMLElement): void {
+    square.classList.add('highlight');
+  }
 
+  private clearHighlights(): void {
+    const highlightedSquares = document.querySelectorAll('.square.highlight');
+    highlightedSquares.forEach(square => square.classList.remove('highlight'));
+  }
 }

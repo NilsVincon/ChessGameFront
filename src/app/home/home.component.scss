@@ -21,7 +21,36 @@ p {
   margin-bottom: 40px;
 }
 
-button {
-  padding: 10px 20px;
+.slogan {
   font-size: 1.2rem;
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+
+  .button {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+
+    &.local-button {
+      background-color: dodgerblue;
+    }
+
+    &.online-button {
+      background-color: darkviolet;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
 }

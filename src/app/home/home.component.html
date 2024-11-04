@@ -1,7 +1,9 @@
 <div class="container text-center">
   <h1>Welcome to ChessMaster</h1>
-  <p>Ready to challenge your skills? Start a new game or explore previous matches!</p>
+  <p class="slogan">Ready for a challenge? Play chess online or gather your friends for a local game!</p>
 
-  <button (click)="testRequest()" class="btn btn-primary">Start New Game</button>
-
+  <div class="button-container">
+    <button (click)="setLocalGameMode()" class="button local-button">Local Game</button>
+    <button (click)="setOnlineGameMode()" class="button online-button">Online Game</button>
+  </div>
 </div>

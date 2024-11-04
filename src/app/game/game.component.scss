@@ -78,3 +78,30 @@
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.highlight {
+  border: 2px solid white;
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.7);
+  transition: box-shadow 0.3s ease;
+}
+
+.chessboard-rotatable {
+  transition: transform 2s ease;
+  display: inline-block;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.chessboard-labels span,
+.square img {
+  transition: transform 2s ease;
+}
+
+.rotate-180 .chessboard-labels span,
+.rotate-180 .square img {
+  transform: rotate(180deg);
+}
+
+
