@@ -28,6 +28,9 @@ export class SignupComponent {
         this.errorMessage = 'Les mots de passe ne correspondent pas.';
         return;
       }
+      if (localStorage.getItem('jwtToken')!==null){
+        localStorage.removeItem('jwtToken');
+      }
       this._http.post('http://localhost:8080/api/auth/signup', { username: this.username, password: this.password })
         .subscribe({
           next: (response) => {
@@ -36,16 +39,7 @@ export class SignupComponent {
           },
           error: (error) => {
             if (error.status === 409) {
-              if (error.error.message.includes("Ce nom d'utilisateur est déjà pris")) {
-                this.errorMessage = "Ce nom d'utilisateur est déjà pris.";
-              }
-              if (error.error.message.includes("Veuillez remplir tous les champs")) {
-                this.errorMessage = "Veuillez remplir tous les champs.";
-              } else if (error.error.message.includes("Votre mot de passe doit contenir au moins 8 caractères")) {
-                this.errorMessage = "Votre mot de passe doit contenir au moins 8 caractères.";
-              } else {
-                this.errorMessage = "Erreur lors de l'inscription.";
-              }
+              this.errorMessage = error.error.message.toString();
             } else {
               this.errorMessage = "Erreur inattendue: " + error.message;
             }
