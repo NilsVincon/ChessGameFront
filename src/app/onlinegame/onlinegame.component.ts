@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FriendService } from '../services/friend.service';
 import { Friendship } from '../models/friendship.model';
 import {CommonModule} from "@angular/common";
+import {Invitation} from "../models/invitation.model";
 
 
 @Component({
@@ -14,11 +15,13 @@ import {CommonModule} from "@angular/common";
 export class OnlinegameComponent implements OnInit {
 
   friends: Friendship[] = [];
+  invitations : Invitation[] = [];
 
   constructor(private friendshipService: FriendService) {}
 
   ngOnInit(): void {
     this.loadFriends();
+    this.showMyInvitations();
   }
 
   loadFriends() {
@@ -26,6 +29,14 @@ export class OnlinegameComponent implements OnInit {
       this.friends = data;
     }, error => {
       console.error("Erreur lors du chargement des amitiés", error);
+    });
+  }
+
+  showMyInvitations() {
+    this.friendshipService.getMyInvitations().subscribe(data => {
+      this.invitations = data;
+    }, error => {
+      console.error("Erreur lors du chargement des invitations", error);
     });
   }
 

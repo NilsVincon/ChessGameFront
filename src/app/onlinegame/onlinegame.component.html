@@ -11,3 +11,21 @@
     <p class="no-friends-message">You have no friends yet.</p>
   </ng-template>
 </div>
+<div>
+  <button (click)="showMyInvitations()">Afficher mes invitations</button>
+
+  <div *ngIf="invitations">
+    <h3>Invitations reçues</h3>
+    <ul>
+      <li *ngFor="let invitation of invitations">
+        <p>{{ invitation.sender.username }}</p>
+        <button>Accepter</button>
+        <button>Refuser</button>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="friends && friends.length === 0">
+    <p>Aucune invitation reçue.</p>
+  </div>
+</div>
