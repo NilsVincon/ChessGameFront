@@ -1,1 +1,13 @@
-<p>onlinegame works!</p>
+<div class="friends-section">
+  <h3>Your Friends</h3>
+  <ul class="friends-list" *ngIf="friends.length > 0; else noFriends">
+    <li *ngFor="let friend of friends" class="friend-item">
+      <img src="/assets/images/avatar.png" alt="Friend Avatar" class="friend-avatar">
+      <span class="friend-name">{{ friend }}</span>
+      <button (click)="invite(friend.toString())">Inviter</button>
+    </li>
+  </ul>
+  <ng-template #noFriends>
+    <p class="no-friends-message">You have no friends yet.</p>
+  </ng-template>
+</div>

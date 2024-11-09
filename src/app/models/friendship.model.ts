@@ -4,6 +4,5 @@ export interface User {
 }
 
 export interface Friendship {
-  friend1: User;
-  friend2: User;
+  friend: User;
 }
