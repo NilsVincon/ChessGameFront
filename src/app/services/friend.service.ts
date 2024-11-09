@@ -23,29 +23,29 @@ export class FriendService {
     return this.http.get<Invitation[]>('http://localhost:8080/play/getMyInvitations');
   }
 
+  acceptInviation(invitation: Invitation): Observable<any> {
+    return this.http.post('http://localhost:8080/play/accept', invitation.id);
+  }
+
+  refuseInviation(invitation: Invitation): Observable<any> {
+    return this.http.post('http://localhost:8080/play/refuse', invitation.id);
+  }
+
   inviteFriend(friendUsername: String): Observable<any> {
-    return this.http.post('http://localhost:8080/play/invite', friendUsername, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+    return this.http.post('http://localhost:8080/play/invite', friendUsername);
   }
 
   addFriendship(username_friend: string): Observable<any> {
     const url = `${this.baseUrl}/add/${username_friend}`;
-    return this.http.post(url, {}, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+    return this.http.post(url, {});
   }
 
   checkFriendship(friendship: Friendship): Observable<any> {
-    return this.http.post(`${this.baseUrl}/checkFriendship`, friendship, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+    return this.http.post(`${this.baseUrl}/checkFriendship`, friendship);
   }
 
   deleteFriendship(friendship: Friendship): Observable<any> {
-    return this.http.post(`${this.baseUrl}/delete`, friendship, {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    });
+    return this.http.post(`${this.baseUrl}/delete`, friendship);
   }
 
 }

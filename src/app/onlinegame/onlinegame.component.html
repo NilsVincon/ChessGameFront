@@ -19,8 +19,8 @@
     <ul>
       <li *ngFor="let invitation of invitations">
         <p>{{ invitation.sender.username }}</p>
-        <button>Accepter</button>
-        <button>Refuser</button>
+        <button (click)="acceptInvitation(invitation)">Accepter</button>
+        <button (click)="refuseInvitation(invitation)">Refuser</button>
       </li>
     </ul>
   </div>

@@ -40,6 +40,28 @@ export class OnlinegameComponent implements OnInit {
     });
   }
 
+  acceptInvitation(invitation: Invitation) {
+    this.friendshipService.acceptInviation(invitation).subscribe(
+      (response) => {
+        console.log('Invitation acceptée', response);
+      },
+      (error) => {
+        console.error("Erreur lors de l'acceptation de l'invitation", error);
+      }
+    );
+  }
+
+  refuseInvitation(invitation: Invitation) {
+    this.friendshipService.refuseInviation(invitation).subscribe(
+      (response) => {
+        console.log('Invitation refusé', response);
+      },
+      (error) => {
+        console.error("Erreur lors du refus de l'invitation", error);
+      }
+    );
+  }
+
   invite(friendUsername: String) {
     this.friendshipService.inviteFriend(friendUsername).subscribe(
       (response) => {
