@@ -3,6 +3,7 @@ import { FriendService } from '../services/friend.service';
 import { Friendship } from '../models/friendship.model';
 import {CommonModule} from "@angular/common";
 import {Invitation} from "../models/invitation.model";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -17,7 +18,7 @@ export class OnlinegameComponent implements OnInit {
   friends: Friendship[] = [];
   invitations : Invitation[] = [];
 
-  constructor(private friendshipService: FriendService) {}
+  constructor(private friendshipService: FriendService,private router : Router) {}
 
   ngOnInit(): void {
     this.loadFriends();
@@ -43,6 +44,8 @@ export class OnlinegameComponent implements OnInit {
   acceptInvitation(invitation: Invitation) {
     this.friendshipService.acceptInviation(invitation).subscribe(
       (response) => {
+        const gameId = response.gameId; // Assurez-vous que `response` contient `gameId`
+        this.router.navigate(['/onlinegameplay', gameId]);
         console.log('Invitation acceptée', response);
       },
       (error) => {

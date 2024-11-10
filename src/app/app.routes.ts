@@ -7,7 +7,7 @@ import {HistoryComponent} from "./history/history.component";
 import {RankingComponent} from "./ranking/ranking.component";
 import {FriendComponent} from "./friend/friend.component";
 import {OnlinegameComponent} from "./onlinegame/onlinegame.component";
-
+import {OnlinegameplayComponent} from "./onlinegameplay/onlinegameplay.component";
 export const routes: Routes = [
   {path:'', component:HomeComponent},
   {path:'new-game', component:GameComponent},
@@ -16,6 +16,7 @@ export const routes: Routes = [
   {path:'history', component:HistoryComponent},
   {path:'ranking', component:RankingComponent},
   {path:'onlinegame', component:OnlinegameComponent},
+  {path:'onlinegameplay/:gameId', component:OnlinegameplayComponent},
   {path: '', redirectTo: '/login', pathMatch: 'full' },
   {path:'friend', component:FriendComponent}
 ];
