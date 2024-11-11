@@ -4,6 +4,7 @@ export class OnlineMove {
   constructor(
     public initialPosition: Position,
     public finalPosition: Position,
-    public gameId:String
+    public gameId:String,
+    public color: String
   ) {}
 }

@@ -44,7 +44,7 @@ export class OnlinegameComponent implements OnInit {
   acceptInvitation(invitation: Invitation) {
     this.friendshipService.acceptInviation(invitation).subscribe(
       (response) => {
-        const gameId = response.gameId; // Assurez-vous que `response` contient `gameId`
+        const gameId = response.gameId;
         this.router.navigate(['/onlinegameplay', gameId]);
         console.log('Invitation acceptée', response);
       },
@@ -69,6 +69,8 @@ export class OnlinegameComponent implements OnInit {
     this.friendshipService.inviteFriend(friendUsername).subscribe(
       (response) => {
         console.log('Invitation envoyée', response);
+        const id_game = response.gameId;
+        this.router.navigate(['/onlinegameplay', id_game]);
       },
       (error) => {
         console.error("Erreur lors de l'envoi de l'invitation", error);

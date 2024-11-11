@@ -113,7 +113,7 @@ export class GameComponent implements AfterViewInit {
         row: move.finalPosition.row,
         column: move.finalPosition.column
       }
-    }; // Créez l'objet à envoyer
+    };
 
     fetch(url, {
       method: 'POST',
@@ -122,46 +122,64 @@ export class GameComponent implements AfterViewInit {
       },
       body: JSON.stringify(body)
     })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(errorData => {
-            throw new Error(errorData.message || 'Erreur lors de la requête');
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Success:', data);
-        // Sélectionner la case d'origine et de destination
-        const originSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.initialPosition.column)}${8 - move.initialPosition.row}"]`);
-        const destinationSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.finalPosition.column)}${8 - move.finalPosition.row}"]`);
+      .then(response => this.handleResponse(response))
+      .then(data => this.updateBoard(move))
+      .catch(error => this.handleError(error));
+  }
 
-        this.clearHighlights();
-
-        // Déplacer l'image de la pièce
-        if (originSquare && destinationSquare) {
-          const piece = originSquare.querySelector('img');
-
-          // Retirer toute pièce existante sur la case de destination
-          const existingPiece = destinationSquare.querySelector('img');
-          if (existingPiece) {
-            existingPiece.remove();
-          }
-
-          if (piece) {
-            destinationSquare.appendChild(piece);
-          }
-          this.highlightSquare(originSquare as HTMLElement);
-          this.highlightSquare(destinationSquare as HTMLElement);
-        }
-        this.toggleTurnAndRotateBoard();
-      })
-      .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-        alert('Mouvement invalide ! Veuillez réessayer.'); // Afficher un message d'erreur
-        this.initialPosition = null;
-        this.clearHighlights();
+  private handleResponse(response: Response): Promise<any> {
+    if (!response.ok) {
+      return response.json().then(errorData => {
+        throw new Error(errorData.message || 'Erreur lors de la requête');
       });
+    }
+    return response.json();
+  }
+  private updateBoard(move: Move): void {
+    console.log('Succès : Mouvement accepté');
+
+    const originSquare = this.getSquare(move.initialPosition);
+    const destinationSquare = this.getSquare(move.finalPosition);
+
+    // Efface les surlignages actuels
+    this.clearHighlights();
+
+    // Déplace la pièce de la case d'origine vers la case de destination
+    if (originSquare && destinationSquare) {
+      const piece = originSquare.querySelector('img');
+
+      // Supprime toute pièce existante sur la case de destination (en cas de prise)
+      const existingPiece = destinationSquare.querySelector('img');
+      if (existingPiece) {
+        existingPiece.remove();
+      }
+
+      // Place la pièce sur la case de destination
+      if (piece) {
+        destinationSquare.appendChild(piece);
+      }
+
+      // Surligne les cases d'origine et de destination
+      this.highlightSquare(originSquare as HTMLElement);
+      this.highlightSquare(destinationSquare as HTMLElement);
+    }
+
+    // Alterne le tour et, si nécessaire, fait pivoter l'échiquier
+    this.toggleTurnAndRotateBoard();
+  }
+
+// Sélectionne une case sur l'échiquier en fonction des coordonnées
+  private getSquare(position: { row: number, column: number }): Element | null {
+    const positionCode = `${String.fromCharCode(97 + position.column)}${8 - position.row}`;
+    return document.querySelector(`.square[data-position="${positionCode}"]`);
+  }
+
+// Gère les erreurs d'envoi et affiche un message d'alerte
+  private handleError(error: Error): void {
+    console.error('Problème lors de l opération fetch:', error);
+    alert('Mouvement invalide ! Veuillez réessayer.');
+    this.initialPosition = null;
+    this.clearHighlights();
   }
 
 

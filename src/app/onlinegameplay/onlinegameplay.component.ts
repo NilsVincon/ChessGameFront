@@ -1,18 +1,22 @@
-import {Component, AfterViewInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router'; // Importez ActivatedRoute
-import {HttpClient} from '@angular/common/http';
-import {Position} from '../models/position.model'; // Importez la classe Position
-import {Move} from '../models/move.model';
-import {OnlineMove} from "../models/onlinemove";
-import {WebsocketService} from "../services/websocket.service"; // Importez la classe Move
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Position } from '../models/position.model';
+import { Move } from '../models/move.model';
+import { OnlineMove } from "../models/onlinemove";
+import { WebsocketService } from "../services/websocket.service";
+import { NgOptimizedImage } from "@angular/common";
 
 @Component({
   selector: 'app-onlinegameplay',
   templateUrl: './onlinegameplay.component.html',
   standalone: true,
+  imports: [
+    NgOptimizedImage
+  ],
   styleUrls: ['./onlinegameplay.component.scss']
 })
-export class OnlinegameplayComponent implements AfterViewInit {
+export class OnlinegameplayComponent implements AfterViewInit, OnDestroy {
 
   private initialPosition: Position | null = null;
   isPlayerOneTurn: boolean = true;
@@ -22,43 +26,85 @@ export class OnlinegameplayComponent implements AfterViewInit {
   private timerInterval: any;
   gameId: string | null = null;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute,private websocketService: WebsocketService) {
-  }
+  private websocketSubscription: any;
 
-  ngAfterViewInit(): void {
-    this.startTimer();
-    this.gameId = this.route.snapshot.paramMap.get('gameId');
-    console.log('Game ID:', this.gameId);
+  constructor(private http: HttpClient, private route: ActivatedRoute, private websocketService: WebsocketService) {}
 
-    const squares = document.querySelectorAll<HTMLDivElement>('.square');
+ ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.startTimer();
+      this.gameId = this.route.snapshot.paramMap.get('gameId');
+      console.log('Game ID:', this.gameId);
 
-    squares.forEach(square => {
-      square.addEventListener('click', () => {
-        const position = square.dataset['position'];
-        if (position) {
-          console.log(`Vous avez sélectionné la case: ${position}`);
+      if (this.gameId) {
+        this.websocketService.connect('ws://localhost:8080/ws', this.gameId);
 
-          // Convertir la position en objet Position
-          const posObject = this.convertToPosition(position);
-          console.log(`Objet Position:`, posObject); // Afficher l'objet Position
+        // Subscription pour les mouvements reçus du WebSocket
+        this.websocketSubscription = this.websocketService.onMove().subscribe(
+          (message: any) => {
+            console.log('Received from WebSocket:', message);
+            this.updateBoardAfterMove(message);
+          },
+          (error) => {
+            console.error('WebSocket error:', error);
+          }
+        );
 
-          if (!this.initialPosition) {
-            this.initialPosition = posObject;
-            this.highlightSquare(square);
+        // Subscription pour les réponses aux mouvements
+        this.websocketService.onMoveResponse().subscribe(response => {
+          if (response.success) {
+            console.log('Mouvement accepté');
+            this.updateBoardAfterMove(response.move);
           } else {
-            if (this.gameId) {
-              const move = new OnlineMove(this.initialPosition, posObject, this.gameId);
-              console.log('Objet Move:', move);
-              this.sendMoveToBackend(move);
-              this.initialPosition = null;
-              this.toggleTurn();
+            console.error('Erreur de mouvement:', response.errorMessage);
+            alert('Mouvement invalide ! Veuillez réessayer.');
+            this.clearHighlights();
+          }
+        });
+      } else {
+        console.error('Game ID est manquant !');
+      }
+
+      // Gestion des clics sur les cases de l'échiquier
+      const squares = document.querySelectorAll<HTMLDivElement>('.square');
+      squares.forEach(square => {
+        square.addEventListener('click', () => {
+          const position = square.dataset['position'];
+          if (position) {
+            console.log(`Vous avez sélectionné la case: ${position}`);
+            const posObject = this.convertToPosition(position);
+            console.log(`Objet Position:`, posObject);
+
+            if (!this.initialPosition) {
+              this.initialPosition = posObject;
+              this.highlightSquare(square);
             } else {
-              alert('Game ID est manquant!');
+              if (this.gameId) {
+                if ((this.activePlayer === 'white' && this.isPlayerOneTurn) ||
+                  (this.activePlayer === 'black' && !this.isPlayerOneTurn)) {
+                  const move = new OnlineMove(this.initialPosition, posObject, this.gameId, this.activePlayer);
+                  console.log('Objet Move:', move);
+                  this.sendMoveToBackend(move);
+                  this.initialPosition = null;
+                  this.toggleTurn();
+                } else {
+                  alert('Ce n\'est pas votre tour de jouer !');
+                }
+              } else {
+                alert('Game ID est manquant!');
+              }
             }
           }
-        }
+        });
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.websocketSubscription) {
+      this.websocketSubscription.unsubscribe(); // Désabonnement propre
+    }
+    this.websocketService.disconnect(); // Déconnexion propre du WebSocket
   }
 
   startTimer(): void {
@@ -71,7 +117,6 @@ export class OnlinegameplayComponent implements AfterViewInit {
         this.updateTimerDisplay('black', this.blackTime);
       }
 
-      // Arrêtez le minuteur lorsque le temps atteint zéro
       if (this.whiteTime <= 0 || this.blackTime <= 0) {
         clearInterval(this.timerInterval);
         alert(`Le temps est écoulé pour ${this.activePlayer === 'white' ? 'Blanc' : 'Noir'}!`);
@@ -89,9 +134,10 @@ export class OnlinegameplayComponent implements AfterViewInit {
   }
 
   toggleTurn(): void {
-    this.activePlayer = this.activePlayer === 'white' ? 'black' : 'white'; // Change le joueur actif
-    clearInterval(this.timerInterval); // Arrêtez le minuteur actuel
-    this.startTimer(); // Démarre le minuteur pour le nouveau joueur
+    this.activePlayer = this.activePlayer === 'white' ? 'black' : 'white';
+    clearInterval(this.timerInterval);
+    this.startTimer();
+    this.isPlayerOneTurn = !this.isPlayerOneTurn; // Change le tour du joueur
   }
 
   sendMoveToBackend(move: Move): void {
@@ -104,22 +150,20 @@ export class OnlinegameplayComponent implements AfterViewInit {
         row: move.finalPosition.row,
         column: move.finalPosition.column
       },
-      gameId: this.gameId // Inclure gameId dans le corps du message
+      gameId: this.gameId // Inclure gameId dans le message
     };
-    this.websocketService.sendMove(moveData);
-    this.updateBoardAfterMove(move);
+    this.websocketService.sendMove(moveData, this.gameId);
   }
+
   private updateBoardAfterMove(move: Move): void {
     const originSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.initialPosition.column)}${8 - move.initialPosition.row}"]`);
     const destinationSquare = document.querySelector(`.square[data-position="${String.fromCharCode(97 + move.finalPosition.column)}${8 - move.finalPosition.row}"]`);
 
     this.clearHighlights();
 
-    // Déplacer l'image de la pièce
     if (originSquare && destinationSquare) {
       const piece = originSquare.querySelector('img');
 
-      // Retirer toute pièce existante sur la case de destination
       const existingPiece = destinationSquare.querySelector('img');
       if (existingPiece) {
         existingPiece.remove();
@@ -134,8 +178,8 @@ export class OnlinegameplayComponent implements AfterViewInit {
   }
 
   convertToPosition(moov: string): Position {
-    const column = moov.charCodeAt(0) - 'a'.charCodeAt(0); // Convert 'a' to 'h' to 0 to 7
-    const row = 8 - parseInt(moov[1], 10); // Convert '1' to '8' to 7 to 0
+    const column = moov.charCodeAt(0) - 'a'.charCodeAt(0);
+    const row = 8 - parseInt(moov[1], 10);
 
     if (column < 0 || column > 7 || row < 0 || row > 7) {
       throw new Error('Position invalide');

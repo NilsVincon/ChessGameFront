@@ -1,50 +1,86 @@
 import { Injectable } from '@angular/core';
-import SockJS from 'sockjs-client';
-import * as Stomp from 'stompjs';
+import { Client, IMessage } from '@stomp/stompjs';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketService {
-  private stompClient: any;
+  private stompClient: Client | null = null;
   private isConnected: boolean = false;
 
-  constructor() { }
+  private moveSubject = new Subject<any>();
+  private connectionSubject = new Subject<boolean>();
+  private moveResponseSubject = new Subject<any>();
 
-  connect() {
-    const socket = new SockJS('http://localhost:8080/ws'); // Remplacez l'URL si nécessaire
-    this.stompClient = Stomp.over(socket);
+  constructor() {}
 
-    this.stompClient.connect({}, () => {
-      this.isConnected = true;
-      console.log('Connected to WebSocket');
-
-      // Abonnez-vous au topic pour recevoir les messages
-      this.stompClient.subscribe('/topic/game-progress', (message: any) => {
-        console.log('Received:', JSON.parse(message.body));
+  // Connexion au serveur STOMP via WebSocket
+  connect(url: string,gameId:string): void {
+    if (!this.isConnected) {
+      this.stompClient = new Client({
+        brokerURL: url,
+        connectHeaders: {
+          // Si nécessaire, tu peux ajouter des headers ici
+        },
+        onConnect: () => {
+          this.isConnected = true;
+          this.connectionSubject.next(true);
+          console.log('Connected to WebSocket server');
+          // S'abonner à un canal STOMP
+          this.stompClient?.subscribe(`/topic/game-progress/${gameId}`, (message: IMessage) => {
+            this.handleMoveMessage(message);
+          });
+        },
+        onDisconnect: () => {
+          this.isConnected = false;
+          this.connectionSubject.next(false);
+          console.log('Disconnected from WebSocket server');
+        },
+        onStompError: (frame) => {
+          console.error('STOMP error', frame);
+        }
       });
-    }, (error: any) => {
-      console.error('WebSocket error:', error);
-      this.isConnected = false;
-    });
+
+      this.stompClient.activate(); // Active la connexion STOMP
+    }
   }
 
-  sendMove(move: any) {
-    if (this.isConnected) {
-      this.stompClient.subscribe(`/topic/game-progress/${move.gameId}`, (message: any) => {
-        console.log('Received message for game', move.gameId, ':', JSON.parse(message.body));
-      });
+  // Envoie un mouvement au serveur STOMP
+  sendMove(move: any, gameId: string|null): void {
+    if (this.stompClient && this.isConnected) {
+      this.stompClient.publish({ destination: `/app/move/${gameId}`, body: JSON.stringify(move) });
     } else {
-      console.error('WebSocket is not connected.');
+      console.error('WebSocket is not connected');
     }
   }
 
-  disconnect() {
+  // Déconnexion du serveur STOMP
+  disconnect(): void {
     if (this.stompClient) {
-      this.stompClient.disconnect(() => {
-        console.log('Disconnected from WebSocket');
-        this.isConnected = false;
-      });
+      this.stompClient.deactivate();
+      this.isConnected = false;
+      console.log('WebSocket connection closed');
     }
+  }
+
+  // Retourne l'observable pour les mouvements
+  onMove() {
+    console.log("onMoveResponse");
+    return this.moveSubject.asObservable();
+  }
+  onMoveResponse() {
+    return this.moveResponseSubject.asObservable();
+  }
+
+  // Retourne l'observable pour l'état de la connexion
+  onConnectionStatus() {
+    return this.connectionSubject.asObservable();
+  }
+
+  // Traite le message de mouvement reçu
+  private handleMoveMessage(message: IMessage): void {
+    const move = JSON.parse(message.body);
+    this.moveSubject.next(move);
   }
 }
