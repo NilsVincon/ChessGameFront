@@ -121,10 +121,14 @@ export class GameComponent implements AfterViewInit {
       body: JSON.stringify(body)
     })
       .then(response => this.handleResponse(response))
+      .then(data => {
+        console.log('Success:', data);
+        if (data.checkmate=="true") {
+          alert('Échec et mat !');
+        }})
       .then(data => this.updateBoard(move))
       .catch(error => this.handleError(error));
   }
-
   private handleResponse(response: Response): Promise<any> {
     if (!response.ok) {
       return response.json().then(errorData => {
