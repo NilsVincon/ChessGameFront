@@ -1,31 +1,36 @@
-<div class="friends-section">
-  <h3>Your Friends</h3>
-  <ul class="friends-list" *ngIf="friends.length > 0; else noFriends">
-    <li *ngFor="let friend of friends" class="friend-item">
-      <img src="/assets/images/avatar.png" alt="Friend Avatar" class="friend-avatar">
-      <span class="friend-name">{{ friend }}</span>
-      <button (click)="invite(friend.toString())">Inviter</button>
-    </li>
-  </ul>
-  <ng-template #noFriends>
-    <p class="no-friends-message">You have no friends yet.</p>
-  </ng-template>
-</div>
-<div>
-  <button (click)="showMyInvitations()">Afficher mes invitations</button>
+<div class="main-container">
+  <div class="friends-container">
+    <!-- Section des amis -->
+    <div class="friends-section">
+      <h3>Your Friends</h3>
+      <ul class="friends-list" *ngIf="friends.length > 0; else noFriends">
+        <li *ngFor="let friend of friends" class="friend-item">
+          <img src="/assets/images/avatar.png" alt="Friend Avatar" class="friend-avatar" />
+          <span class="friend-name">{{ friend }}</span>
+          <button class="invite-button" (click)="invite(friend.toString())">Inviter</button>
+        </li>
+      </ul>
+      <ng-template #noFriends>
+        <p class="no-friends-message">You have no friends yet.</p>
+      </ng-template>
+    </div>
 
-  <div *ngIf="invitations">
-    <h3>Invitations reçues</h3>
-    <ul>
-      <li *ngFor="let invitation of invitations">
-        <p>{{ invitation.sender.username }}</p>
-        <button (click)="acceptInvitation(invitation)">Accepter</button>
-        <button (click)="refuseInvitation(invitation)">Refuser</button>
-      </li>
-    </ul>
-  </div>
-
-  <div *ngIf="friends && friends.length === 0">
-    <p>Aucune invitation reçue.</p>
+    <!-- Section des invitations -->
+    <div class="invitations-section">
+      <button class="invitations-button" (click)="showMyInvitations()">Afficher mes invitations</button>
+      <div *ngIf="invitations && invitations.length > 0">
+        <h3>Invitations reçues</h3>
+        <ul>
+          <li *ngFor="let invitation of invitations" class="invitation-item">
+            <p class="invitation-sender">{{ invitation.sender.username }}</p>
+            <button class="accept-button" (click)="acceptInvitation(invitation)">Accepter</button>
+            <button class="refuse-button" (click)="refuseInvitation(invitation)">Refuser</button>
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="!invitations || invitations.length === 0">
+        <p class="no-invitations-message">Aucune invitation reçue.</p>
+      </div>
+    </div>
   </div>
 </div>

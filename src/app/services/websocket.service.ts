@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
 import { Subject } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })

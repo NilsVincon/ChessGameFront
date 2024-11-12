@@ -86,7 +86,7 @@
 }
 
 .chessboard-rotatable {
-  transition: transform 2s ease;
+  transition: transform 0.5s ease;
   display: inline-block;
 }
 
@@ -96,7 +96,7 @@
 
 .chessboard-labels span,
 .square img {
-  transition: transform 2s ease;
+  transition: transform 0.5s ease;
 }
 
 .rotate-180 .chessboard-labels span,
