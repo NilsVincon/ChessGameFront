@@ -4,7 +4,7 @@
     <h3>Blanc</h3>
     <p>Time Remaining: <span class="timer">10:00</span></p>
   </div>
-  <div class="chessboard-rotatable" [ngClass]="{'flipped': !isWhiteView}">
+  <div class="chessboard-rotatable" [ngClass]="{'rotate-180': !isWhiteView}">
     <div class="chessboard-labels top" *ngIf="isWhiteView">
       <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span>
     </div>

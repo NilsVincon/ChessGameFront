@@ -20,6 +20,65 @@
 .chessboard-labels.bottom {
   text-align: right;
 }
+.chessboard-rotatable {
+  transition: transform 2s ease;
+  display: inline-block;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.chessboard-labels span,
+.square img {
+  transition: transform 2s ease;
+}
+
+.rotate-180 .chessboard-labels span,
+.rotate-180 .square img {
+  transform: rotate(180deg);
+}
+
+.chessboard-labels.top, .chessboard-labels.bottom {
+  width: 560px;
+  margin: 0 20px;
+}
+
+.chessboard-labels.left, .chessboard-labels.right {
+  flex-direction: column;
+  justify-content: space-between;
+  height: 560px;
+  margin: 0 10px;
+}
+
+.chessboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.chessboard {
+  display: grid;
+  grid-template-columns: repeat(8, 70px);
+  grid-template-rows: repeat(8, 70px);
+  border: 2px solid #333;
+}
+
+.square {
+  width: 70px;
+  height: 70px;
+  border: 1px solid #000;
+}
+
+.light {
+  background-color: #f0d9b5;
+}
+
+.dark {
+  background-color: #b58863;
+}
+
 
 .player-info.white {
   text-align: left;
