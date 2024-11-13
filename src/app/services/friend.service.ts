@@ -19,7 +19,6 @@ export class FriendService {
   }
 
   getMyInvitations(): Observable<Invitation[]> {
-    console.log("réponse de l'api" + this.http.get<Invitation[]>('http://localhost:8080/play/getMyInvitations'))
     return this.http.get<Invitation[]>('http://localhost:8080/play/getMyInvitations');
   }
 

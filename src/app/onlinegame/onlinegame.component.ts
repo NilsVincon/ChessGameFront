@@ -17,6 +17,10 @@ export class OnlinegameComponent implements OnInit {
 
   friends: Friendship[] = [];
   invitations : Invitation[] = [];
+  colorSender: string | null = null;
+  colorReceiver: string | null = null;
+  senderUsername: string | null = null;
+  receiverUsername: string | null = null;
 
   constructor(private friendshipService: FriendService,private router : Router) {}
 
@@ -45,7 +49,11 @@ export class OnlinegameComponent implements OnInit {
     this.friendshipService.acceptInviation(invitation).subscribe(
       (response) => {
         const gameId = response.gameId;
-        this.router.navigate(['/onlinegameplay', gameId]);
+        const colorSender = response.colorSender;
+        const colorReceiver = response.colorReceiver;
+        const senderUsername = response.senderUsername;
+        const receiverUsername = response.receiverUsername;
+        this.router.navigate(['/onlinegameplay', gameId, colorSender, colorReceiver, senderUsername, receiverUsername]);
         console.log('Invitation acceptée', response);
       },
       (error) => {
@@ -70,7 +78,11 @@ export class OnlinegameComponent implements OnInit {
       (response) => {
         console.log('Invitation envoyée', response);
         const id_game = response.gameId;
-        this.router.navigate(['/onlinegameplay', id_game]);
+        const colorSender = response.colorSender;
+        const colorReceiver = response.colorReceiver;
+        const senderUsername = response.senderUsername;
+        const receiverUsername = response.receiverUsername;
+        this.router.navigate(['/onlinegameplay', id_game, colorSender, colorReceiver, senderUsername, receiverUsername]);
       },
       (error) => {
         console.error("Erreur lors de l'envoi de l'invitation", error);

@@ -35,8 +35,6 @@ export class GameComponent implements AfterViewInit {
       square.addEventListener('click', () => {
         const position = square.dataset['position'];
         if (position) {
-          console.log(`Vous avez sélectionné la case: ${position}`);
-
           // Convertir la position en objet Position
           const posObject = this.convertToPosition(position);
           console.log(`Objet Position:`, posObject); // Afficher l'objet Position

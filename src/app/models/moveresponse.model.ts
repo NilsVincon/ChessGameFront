@@ -4,5 +4,6 @@ export class Moveresponse {
   constructor(
     public move: Move,
     public checkmate: String,
+    public activePlayer : String,
   ) {}
 }

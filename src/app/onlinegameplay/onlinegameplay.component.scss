@@ -9,6 +9,26 @@
   align-items: center;
 }
 
+.flipped {
+  transform: rotate(180deg);
+}
+
+.chessboard-labels.top {
+  text-align: left;
+}
+
+.chessboard-labels.bottom {
+  text-align: right;
+}
+
+.player-info.white {
+  text-align: left;
+}
+
+.player-info.black {
+  text-align: right;
+}
+
 .game-container {
   background-color: #e0e0e0;
   display: flex;

@@ -16,7 +16,7 @@ export const routes: Routes = [
   {path:'history', component:HistoryComponent},
   {path:'ranking', component:RankingComponent},
   {path:'onlinegame', component:OnlinegameComponent},
-  {path:'onlinegameplay/:gameId', component:OnlinegameplayComponent},
+  {path: 'onlinegameplay/:gameId/:colorSender/:colorReceiver/:senderUsername/:receiverUsername', component: OnlinegameplayComponent },
   {path: '', redirectTo: '/login', pathMatch: 'full' },
   {path:'friend', component:FriendComponent}
 ];

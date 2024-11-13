@@ -12,6 +12,7 @@ export class WebsocketService {
   private moveSubject = new Subject<any>();
   private connectionSubject = new Subject<boolean>();
   private moveResponseSubject = new Subject<any>();
+  public activePlayer: String = "white";
 
   constructor() {}
 
@@ -81,10 +82,13 @@ export class WebsocketService {
   // Traite le message de mouvement reçu
   private handleMoveMessage(message: IMessage): void {
     const moveResponse: Moveresponse = JSON.parse(message.body);
+    this.activePlayer = moveResponse.activePlayer;
+    console.log('Active player dans wsService :', this.activePlayer);
     console.log('Checkmate :', moveResponse.checkmate);
     if (moveResponse.checkmate) {
       console.log('Checkmate');
       alert("Checkmate");
+      //TODO STOP LA PARTIE
     }
     this.moveSubject.next(moveResponse.move);
   }

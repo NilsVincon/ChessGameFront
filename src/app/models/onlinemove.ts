@@ -5,6 +5,6 @@ export class OnlineMove {
     public initialPosition: Position,
     public finalPosition: Position,
     public gameId:String,
-    public color: String
+    public color: String|null,
   ) {}
 }
