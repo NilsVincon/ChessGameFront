@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
 import { Subject } from 'rxjs';
+import {Moveresponse} from "../models/moveresponse.model";
 @Injectable({
   providedIn: 'root'
 })
@@ -79,7 +80,12 @@ export class WebsocketService {
 
   // Traite le message de mouvement reçu
   private handleMoveMessage(message: IMessage): void {
-    const move = JSON.parse(message.body);
-    this.moveSubject.next(move);
+    const moveResponse: Moveresponse = JSON.parse(message.body);
+    console.log('Checkmate :', moveResponse.checkmate);
+    if (moveResponse.checkmate) {
+      console.log('Checkmate');
+      alert("Checkmate");
+    }
+    this.moveSubject.next(moveResponse.move);
   }
 }
