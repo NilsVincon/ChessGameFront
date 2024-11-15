@@ -53,7 +53,6 @@ export class OnlinegameplayComponent implements AfterViewInit, OnDestroy {
       if (this.gameId) {
         this.websocketService.connect('ws://localhost:8080/ws', this.gameId);
 
-        // Subscription pour les mouvements reçus du WebSocket
         this.websocketSubscription = this.websocketService.onMove().subscribe(
           (message: any) => {
             this.updateBoardAfterMove(message);
@@ -63,7 +62,6 @@ export class OnlinegameplayComponent implements AfterViewInit, OnDestroy {
           }
         );
 
-        // Subscription pour les réponses aux mouvements
         this.websocketService.onMoveResponse().subscribe(response => {
           if (response.success) {
             this.updateBoardAfterMove(response.move);
@@ -77,7 +75,6 @@ export class OnlinegameplayComponent implements AfterViewInit, OnDestroy {
         console.error('Game ID est manquant !');
       }
 
-      // Gestion des clics sur les cases de l'échiquier
       const squares = document.querySelectorAll<HTMLDivElement>('.square');
       squares.forEach(square => {
         square.addEventListener('click', () => {
@@ -113,9 +110,9 @@ export class OnlinegameplayComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.websocketSubscription) {
-      this.websocketSubscription.unsubscribe(); // Désabonnement propre
+      this.websocketSubscription.unsubscribe();
     }
-    this.websocketService.disconnect(); // Déconnexion propre du WebSocket
+    this.websocketService.disconnect();
   }
 
   startTimer(): void {
@@ -146,7 +143,7 @@ export class OnlinegameplayComponent implements AfterViewInit, OnDestroy {
 
   sendMoveToBackend(move: Move,activePlayer : String): void {
     const moveData = {
-      move: {  // Emballer move dans un objet
+      move: {
         initialPosition: {
           row: move.initialPosition.row,
           column: move.initialPosition.column

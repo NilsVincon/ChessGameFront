@@ -2,8 +2,8 @@ import { Component, OnInit,AfterViewInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {NgClass, NgOptimizedImage} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Position } from '../models/position.model'; // Importez la classe Position
-import { Move } from '../models/move.model'; // Importez la classe Move
+import { Position } from '../models/position.model';
+import { Move } from '../models/move.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { FormsModule } from '@angular/forms';
@@ -62,16 +62,16 @@ export class GameComponent implements AfterViewInit, OnInit, FormsModule {
         if (position) {
           // Convertir la position en objet Position
           const posObject = this.convertToPosition(position);
-          console.log(`Objet Position:`, posObject); // Afficher l'objet Position
+          console.log(`Objet Position:`, posObject);
 
           if (!this.initialPosition) {
             this.initialPosition = posObject;
             this.highlightSquare(square);
           } else {
-            const move = new Move(this.initialPosition, posObject); // Créer un nouvel objet Move
+            const move = new Move(this.initialPosition, posObject);
             console.log('Objet Move:', move);
-            this.sendMoveToBackend(move); // Envoyer l'objet Move
-            this.initialPosition = null; // Réinitialiser la position initiale
+            this.sendMoveToBackend(move);
+            this.initialPosition = null;
             this.toggleTurn();
           }
         }
@@ -107,9 +107,9 @@ export class GameComponent implements AfterViewInit, OnInit, FormsModule {
   }
 
   toggleTurn(): void {
-    this.activePlayer = this.activePlayer === 'white' ? 'black' : 'white'; // Change le joueur actif
-    clearInterval(this.timerInterval); // Arrêtez le minuteur actuel
-    this.startTimer(); // Démarre le minuteur pour le nouveau joueur
+    this.activePlayer = this.activePlayer === 'white' ? 'black' : 'white';
+    clearInterval(this.timerInterval);
+    this.startTimer();
   }
 
   toggleTurnAndRotateBoard(): void {
@@ -126,7 +126,7 @@ export class GameComponent implements AfterViewInit, OnInit, FormsModule {
   }
 
   sendMoveToBackend(move: Move): void {
-    const url = 'http://localhost:8080/move'; // Remplacez par l'URL de votre backend
+    const url = 'http://localhost:8080/move';
     const body = {
       initialPosition: {
         row: move.initialPosition.row,
@@ -176,40 +176,39 @@ export class GameComponent implements AfterViewInit, OnInit, FormsModule {
     const originSquare = this.getSquare(move.initialPosition);
     const destinationSquare = this.getSquare(move.finalPosition);
 
-    // Efface les surlignages actuels
+
     this.clearHighlights();
 
-    // Déplace la pièce de la case d'origine vers la case de destination
+
     if (originSquare && destinationSquare) {
       const piece = originSquare.querySelector('img');
 
-      // Supprime toute pièce existante sur la case de destination (en cas de prise)
+
       const existingPiece = destinationSquare.querySelector('img');
       if (existingPiece) {
         existingPiece.remove();
       }
 
-      // Place la pièce sur la case de destination
+
       if (piece) {
         destinationSquare.appendChild(piece);
       }
 
-      // Surligne les cases d'origine et de destination
+
       this.highlightSquare(originSquare as HTMLElement);
       this.highlightSquare(destinationSquare as HTMLElement);
     }
 
-    // Alterne le tour et, si nécessaire, fait pivoter l'échiquier
+
     this.toggleTurnAndRotateBoard();
   }
 
-// Sélectionne une case sur l'échiquier en fonction des coordonnées
+
   private getSquare(position: { row: number, column: number }): Element | null {
     const positionCode = `${String.fromCharCode(97 + position.column)}${8 - position.row}`;
     return document.querySelector(`.square[data-position="${positionCode}"]`);
   }
 
-// Gère les erreurs d'envoi et affiche un message d'alerte
   private handleError(error: Error): void {
     console.error('Problème lors de l opération fetch:', error);
     alert('Mouvement invalide ! Veuillez réessayer.');
@@ -219,10 +218,8 @@ export class GameComponent implements AfterViewInit, OnInit, FormsModule {
 
 
   convertToPosition(moov: string): Position {
-    // Convertit le premier caractère de la chaîne 'moov' en un nombre de 0 à 7 pour les colonnes
     const column = moov.charCodeAt(0) - 'a'.charCodeAt(0); // Convert 'a' to 'h' to 0 to 7
 
-    // Convertit le deuxième caractère de la chaîne 'moov' en un nombre de 0 à 7 pour les lignes, mais inversé
     const row = 8 - parseInt(moov[1], 10); // Convert '1' to '8' to 7 to 0
 
     if (column < 0 || column > 7 || row < 0 || row > 7) {

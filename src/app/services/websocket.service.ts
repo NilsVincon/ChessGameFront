@@ -16,19 +16,18 @@ export class WebsocketService {
 
   constructor() {}
 
-  // Connexion au serveur STOMP via WebSocket
+
   connect(url: string,gameId:string): void {
     if (!this.isConnected) {
       this.stompClient = new Client({
         brokerURL: url,
         connectHeaders: {
-          // Si nécessaire, tu peux ajouter des headers ici
+
         },
         onConnect: () => {
           this.isConnected = true;
           this.connectionSubject.next(true);
           console.log('Connected to WebSocket server');
-          // S'abonner à un canal STOMP
           this.stompClient?.subscribe(`/topic/game-progress/${gameId}`, (message: IMessage) => {
             this.handleMoveMessage(message);
           });
@@ -43,11 +42,10 @@ export class WebsocketService {
         }
       });
 
-      this.stompClient.activate(); // Active la connexion STOMP
+      this.stompClient.activate();
     }
   }
 
-  // Envoie un mouvement au serveur STOMP
   sendMove(move: any, gameId: string|null): void {
     if (this.stompClient && this.isConnected) {
       this.stompClient.publish({ destination: `/app/move/${gameId}`, body: JSON.stringify(move) });
@@ -56,7 +54,6 @@ export class WebsocketService {
     }
   }
 
-  // Déconnexion du serveur STOMP
   disconnect(): void {
     if (this.stompClient) {
       this.stompClient.deactivate();
@@ -65,7 +62,6 @@ export class WebsocketService {
     }
   }
 
-  // Retourne l'observable pour les mouvements
   onMove() {
     console.log("onMoveResponse");
     return this.moveSubject.asObservable();
@@ -74,12 +70,10 @@ export class WebsocketService {
     return this.moveResponseSubject.asObservable();
   }
 
-  // Retourne l'observable pour l'état de la connexion
   onConnectionStatus() {
     return this.connectionSubject.asObservable();
   }
 
-  // Traite le message de mouvement reçu
   private handleMoveMessage(message: IMessage): void {
     const moveResponse: Moveresponse = JSON.parse(message.body);
     this.activePlayer = moveResponse.activePlayer;
