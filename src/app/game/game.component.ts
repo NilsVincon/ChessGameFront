@@ -6,6 +6,7 @@ import { Position } from '../models/position.model'; // Importez la classe Posit
 import { Move } from '../models/move.model'; // Importez la classe Move
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-game',
@@ -13,12 +14,13 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   imports: [
     RouterLink,
     NgOptimizedImage,
-    NgClass
+    NgClass,
+    FormsModule
   ],
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements AfterViewInit, OnInit {
+export class GameComponent implements AfterViewInit, OnInit, FormsModule {
 
 
   private initialPosition: Position | null = null; // Pour stocker la position initiale
@@ -27,7 +29,8 @@ export class GameComponent implements AfterViewInit, OnInit {
   private blackTime: number = 600;
   private activePlayer: 'white' | 'black' = 'white';
   private timerInterval: any;
-
+  whiteDrawRequest: boolean = false;
+  blackDrawRequest: boolean = false;
 
 
   resetGame(): void {
@@ -36,6 +39,8 @@ export class GameComponent implements AfterViewInit, OnInit {
     this.activePlayer = 'white';
     this.isPlayerOneTurn = true;
     this.clearHighlights();
+    this.whiteDrawRequest = false;
+    this.blackDrawRequest = false;
     //this.initialPosition = null;
     //clearInterval(this.timerInterval);
     //this.startTimer();
@@ -250,6 +255,8 @@ export class GameComponent implements AfterViewInit, OnInit {
     });
   }
 
+
+
   sendSurrenderToBackend(player: string): void {
     const url = 'http://localhost:8080/move/surrender';
     const body = { player };
@@ -272,8 +279,27 @@ export class GameComponent implements AfterViewInit, OnInit {
       });
   }
 
-  onDrawRequest(player: string) {
-    console.log(`${player} a demandé une nulle.`);
-    // Logique supplémentaire pour gérer la demande de nulle
+  onDrawRequestChange(): void {
+    if (this.whiteDrawRequest && this.blackDrawRequest) {
+      this.sendDrawRequestToBackend();
+    }
   }
+
+  sendDrawRequestToBackend(): void {
+    const url = 'http://localhost:8080/move/draw';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(() =>{
+          alert('La partie est déclarée nulle');
+          this.router.navigate(['']);
+      })
+      .catch(error => this.handleError(error));
+  }
+
+
 }

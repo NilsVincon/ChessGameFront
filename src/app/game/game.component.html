@@ -4,7 +4,9 @@
     <p>Time Remaining: <span class="timer">10:00</span></p>
     <div class="player-actions">
       <button (click)="onSurrender('Blancs')">Abandonner</button>
-      <button (click)="onDrawRequest('Blancs')">Nulle</button>
+      <label>
+        <input type="checkbox" [(ngModel)]="whiteDrawRequest" (change)="onDrawRequestChange()"> Nulle
+      </label>
     </div>
   </div>
   <div class="chessboard-rotatable">
@@ -90,7 +92,9 @@
     <p>Time Remaining: <span class="timer">10:00</span></p>
     <div class="player-actions">
       <button (click)="onSurrender('Noirs')">Abandonner</button>
-      <button (click)="onDrawRequest('Noirs')">Nulle</button>
+      <label>
+        <input type="checkbox" [(ngModel)]="blackDrawRequest" (change)="onDrawRequestChange()"> Nulle
+      </label>
     </div>
   </div>
 </div>
