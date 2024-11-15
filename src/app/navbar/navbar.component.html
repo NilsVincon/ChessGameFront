@@ -6,7 +6,7 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarText">
+  <div class="collapse navbar-collapse dflex" id="navbarText">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
         <a class="nav-link" routerLink="/">Play Chess</a>
@@ -24,5 +24,14 @@
         <a class="nav-link" routerLink="/login">login</a>
       </li>
     </ul>
+    <div class="navbar-right">
+      <ng-container *ngIf="username">
+        <img src="/assets/images/user.ico"
+             alt="User Avatar"
+             class="user-avatar"
+             ngOptimizedImage
+             fill />        <span class="navbar-username">{{ username | titlecase }}</span>
+      </ng-container>
+    </div>
   </div>
 </nav>

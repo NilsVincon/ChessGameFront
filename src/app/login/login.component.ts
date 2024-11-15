@@ -30,6 +30,7 @@ export class LoginComponent {
           console.log('Connexion réussie !', response);
           localStorage.setItem('jwtToken', response.jwt);
           this.router.navigate(['/']);
+
         },
         error: (error) => {
           this.errorMessage = 'Identifiant ou mot de passe incorrect';

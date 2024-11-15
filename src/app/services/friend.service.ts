@@ -13,7 +13,6 @@ export class FriendService {
 
   constructor(private http: HttpClient) {
   }
-
   getAllFriendships(): Observable<Friendship[]> {
     return this.http.get<Friendship[]>(`${this.baseUrl}/getFriends`);
   }

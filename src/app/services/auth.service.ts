@@ -8,10 +8,10 @@ export class AuthService {
   constructor() { }
 
   getUsernameFromToken(): string | null {
-    const token = localStorage.getItem('jwtToken'); // Ou utiliser un autre mécanisme pour stocker le token
+    const token = localStorage.getItem('jwtToken');
     if (token) {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.sub || null; // Assurez-vous que le nom de l'utilisateur est stocké dans le token sous "username"
+      return decodedToken.sub || null;
     }
     return null;
   }

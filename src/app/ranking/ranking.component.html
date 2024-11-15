@@ -1,1 +1,17 @@
-<p>ranking works!</p>
+<div class="main-container">
+<div class="ranking-container">
+    <h2 class="ranking-title">Classement des Amis</h2>
+
+    <div *ngIf="friendships.length === 0" class="no-friends-message">
+      Aucun ami disponible pour le classement.
+    </div>
+
+    <ul class="ranking-list" *ngIf="rankedFriends.length > 0">
+      <li *ngFor="let friend of rankedFriends; let i = index" class="ranking-item">
+        <span class="rank">{{ i + 1 }}.</span>
+        <span class="friend-name">{{ friend.name }}</span>
+        <span class="friend-points">{{ friend.points }} points</span>
+      </li>
+    </ul>
+  </div>
+</div>
