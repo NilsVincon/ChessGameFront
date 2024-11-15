@@ -104,4 +104,35 @@
   transform: rotate(180deg);
 }
 
+.player-actions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.player-actions button {
+  margin-top: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #d32f2f;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.player-actions button:hover {
+  background-color: #b71c1c;
+}
+
+.player-actions button:nth-child(2) {
+  background-color: #1976d2;
+}
+
+.player-actions button:nth-child(2):hover {
+  background-color: #0d47a1;
+}
+
+
 

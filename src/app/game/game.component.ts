@@ -1,9 +1,11 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit,AfterViewInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import {NgClass, NgOptimizedImage} from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Position } from '../models/position.model'; // Importez la classe Position
 import { Move } from '../models/move.model'; // Importez la classe Move
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-game',
@@ -16,7 +18,8 @@ import { Move } from '../models/move.model'; // Importez la classe Move
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements AfterViewInit {
+export class GameComponent implements AfterViewInit, OnInit {
+
 
   private initialPosition: Position | null = null; // Pour stocker la position initiale
   isPlayerOneTurn: boolean = true;
@@ -25,7 +28,24 @@ export class GameComponent implements AfterViewInit {
   private activePlayer: 'white' | 'black' = 'white';
   private timerInterval: any;
 
-  constructor(private http: HttpClient) {}
+
+
+  resetGame(): void {
+    this.whiteTime = 600;
+    this.blackTime = 600;
+    this.activePlayer = 'white';
+    this.isPlayerOneTurn = true;
+    this.clearHighlights();
+    //this.initialPosition = null;
+    //clearInterval(this.timerInterval);
+    //this.startTimer();
+  }
+
+  ngOnInit(): void {
+    this.resetGame();
+  }
+
+  constructor(private http: HttpClient, public dialog: MatDialog,  private router: Router) {}
 
   ngAfterViewInit(): void {
     this.startTimer();
@@ -124,7 +144,15 @@ export class GameComponent implements AfterViewInit {
       .then(data => {
         console.log('Success:', data);
         if (data.checkmate=="true") {
-          alert('Échec et mat !');
+          if(this.activePlayer == 'black'){
+            alert('Échec et mat ! Les blancs ont gagné ');
+            this.router.navigate(['']);
+          }
+          else{
+            alert('Échec et mat ! Les noirs ont gagné ');
+            this.router.navigate(['']);
+          }
+
         }})
       .then(data => this.updateBoard(move))
       .catch(error => this.handleError(error));
@@ -205,5 +233,47 @@ export class GameComponent implements AfterViewInit {
   private clearHighlights(): void {
     const highlightedSquares = document.querySelectorAll('.square.highlight');
     highlightedSquares.forEach(square => square.classList.remove('highlight'));
+  }
+
+
+
+  onSurrender(player: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(`${player} a abandonné la partie.`);
+        this.sendSurrenderToBackend(player);
+      } else {
+        console.log(`${player} a annulé l'abandon.`);
+      }
+    });
+  }
+
+  sendSurrenderToBackend(player: string): void {
+    const url = 'http://localhost:8080/move/surrender';
+    const body = { player };
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+
+      .then(() => {
+        alert(`Les ${player} ont abandonné la partie.`);
+        this.router.navigate(['']);
+      })
+      .catch(error => {
+        console.error('Problème lors de l opération fetch:', error);
+        alert('Erreur lors de l\'abandon de la partie. Veuillez réessayer.');
+      });
+  }
+
+  onDrawRequest(player: string) {
+    console.log(`${player} a demandé une nulle.`);
+    // Logique supplémentaire pour gérer la demande de nulle
   }
 }
